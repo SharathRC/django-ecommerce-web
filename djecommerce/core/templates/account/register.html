@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register Account {% endblock %}
+
+{% block style %}
+    <style>
+        .register_style {
+            width:500px;
+            margin:auto;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 register_style">
+        <h3>Register Account</h3>
+        <form action="" method="POST" novalidate>
+            {{user_form | crispy}}
+            {% csrf_token %}
+
+            <input type="submit" value="Create Account" class="btn btn-success">
+
+        </form>
+    </div>
+
+{% endblock %}
