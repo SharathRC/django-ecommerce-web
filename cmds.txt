@@ -1,3 +1,4 @@
 python manage.py runserver
 python manage.py migrate
 python manage.py startapp core  #create a new app
+python manage.py makemigrations #create a migration of the new app to django
