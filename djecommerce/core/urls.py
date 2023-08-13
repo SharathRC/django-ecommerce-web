@@ -1,10 +1,15 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from django.contrib.auth.views import (
+    LoginView, 
+    LogoutView, 
+    PasswordChangeView, 
+    PasswordChangeDoneView
+)
 
 from .views import item_list
 
-app_name = 'core'
 
 urlpatterns = [
+    path('', LoginView.as_view(), name='login'),
     path('items/', item_list, name='item_list'),
 ]
