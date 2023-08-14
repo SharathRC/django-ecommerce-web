@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from .models import Item
 
 from .forms import UserRegistrationForm
@@ -22,8 +23,26 @@ def register(request):
     return render(request, 'account/register.html', {'user_form': user_form})
 
 @login_required
+@csrf_exempt
 def item_list(request):
-    context = {
-        'items': Item.objects.all(),
-    }
-    return render(request, "item_list.html", context)
+    if request.method == 'GET':
+        context = {
+            'items': Item.objects.all(),
+        }
+        return render(request, "index.html", context)
+    
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        if id == '':
+            item = Item.objects.create(
+                title = request.POST.get('title'),
+                price = request.POST.get('price')
+            )
+            item.save()
+            return redirect('item_list')
+        else:
+            item = Item.objects.get(id=id)
+            item.title = request.POST.get('title')
+            item.price = request.POST.get('price')
+            item.save()
+            return redirect('item_list')
