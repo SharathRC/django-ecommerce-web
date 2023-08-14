@@ -8,7 +8,7 @@ from django.contrib.auth.views import (
 
 from .views import (
     item_list,
-    register,   
+    register,
 )
 
 

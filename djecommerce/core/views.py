@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from .models import Item
 
 from .forms import UserRegistrationForm
@@ -20,6 +21,7 @@ def register(request):
         
     return render(request, 'account/register.html', {'user_form': user_form})
 
+@login_required
 def item_list(request):
     context = {
         'items': Item.objects.all(),
