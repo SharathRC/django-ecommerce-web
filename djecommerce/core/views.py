@@ -29,7 +29,7 @@ def item_list(request):
         context = {
             'items': Item.objects.all(),
         }
-        return render(request, "index.html", context)
+        return render(request, "home-page/home-page.html", context)
     
     if request.method == 'POST':
         id = request.POST.get('id')
