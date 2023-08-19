@@ -5,20 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock title %}</title>
 
-  {% comment %} <script src="https://cdn.tailwindcss.com"></script> {% endcomment %}
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <link href="../../dist/output.css" rel="stylesheet">
+  {% comment %} <link href="/dist/output.css" rel="stylesheet"> {% endcomment %}
 
 </head>
 <body>
-    <nav class="max-w-4xl bg-teal-600">
+    <nav class="max-w-4xl mx-auto py-4 px-6 flex items-center justify-between bg-teal-600">
         <div class="logo">
-            <a href="/">Rice</a>
+            <a href="/" class="text-white">RICE</a>
+        </div>
+
+        <div class="menu">
+            <a href="{% url 'about' %}" class="text-white">About</a>
         </div>
     </nav>
 
-    {% block content %}
-    {% endblock %}
+    <div class="max-w-4xl mx-auto py-4 px-6">    
+        {% block content %}
+        {% endblock %}
+    </div>
 
 </body>
 </html>
