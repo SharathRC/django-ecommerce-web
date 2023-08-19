@@ -1,3 +1,5 @@
+{% load menu %}
+
 <!doctype html>
 <html>
 <head>
@@ -16,8 +18,8 @@
             <a href="/" class="text-white">RICE</a>
         </div>
 
-        <div class="menu">
-            <a href="{% url 'about' %}" class="text-white">About</a>
+        <div class="menu flex space-x-4">
+            {% menu %}
         </div>
     </nav>
 
