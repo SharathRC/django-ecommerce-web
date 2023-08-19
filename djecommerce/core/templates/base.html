@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock title %}</title>
+
+  <link href="/dist/output.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="max-w-4xl bg-teal-600">
+        <div class="logo">
+            <a href="/">Rice</a>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
