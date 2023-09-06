@@ -6,9 +6,9 @@ from .views import vendor_detail, signup, my_account
 
 
 urlpatterns = [
-    path('vendors/<int:pk>/', vendor_detail, name='vendor_detail'),
-    path('signup/', signup, name='signup'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('my-account/', my_account, name='my_account'),
+    path("vendors/<int:pk>/", vendor_detail, name="vendor_detail"),
+    path("signup/", signup, name="signup"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("my-account/", my_account, name="my_account"),
 ]
