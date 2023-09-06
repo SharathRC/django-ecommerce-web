@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.text import slugify
 
 from .models import UserProfile
+from store.forms import ProductForm
+from store.models import Product, Category
 
 
 def vendor_detail(request, pk):
@@ -13,6 +17,34 @@ def vendor_detail(request, pk):
     return render(request, "vendor_detail.html", context)
 
 
+@login_required
+def my_store(request):
+    return render(request, "my_store.html")
+
+
+@login_required
+def add_product(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            title = request.POST.get("title")
+
+            product = form.save(commit=False)
+            product.user = request.user
+            product.slug = slugify(title)
+            product.save()
+
+            return redirect("my_store")
+    else:
+        form = ProductForm()
+
+    context = {"form": form}
+
+    return render(request, "add_product.html", context)
+
+
+@login_required
 def my_account(request):
     return render(request, "my_account.html")
 
