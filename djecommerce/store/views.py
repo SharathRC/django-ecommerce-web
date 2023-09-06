@@ -6,7 +6,7 @@ from .models import Product, Category
 
 def search(request):
     query = request.GET.get("query", "")
-    products = Product.objects.filter(
+    products = Product.objects.filter(status=Product.ACTIVE).filter(
         Q(title__icontains=query) | Q(description__icontains=query)
     )
 
@@ -20,7 +20,7 @@ def search(request):
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    products = category.products.all()
+    products = category.products.filter(status=Product.ACTIVE)
     context = {
         "category": category,
         "products": products,
@@ -30,6 +30,6 @@ def category_detail(request, slug):
 
 
 def product_detail(request, category_slug, slug):
-    product = get_object_or_404(Product, slug=slug)
+    product = get_object_or_404(Product, slug=slug, status=Product.ACTIVE)
     context = {"product": product}
     return render(request, "product_detail.html", context)

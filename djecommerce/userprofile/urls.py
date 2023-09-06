@@ -9,6 +9,7 @@ from .views import (
     my_store,
     add_product,
     edit_product,
+    delete_product,
 )
 
 
@@ -21,4 +22,5 @@ urlpatterns = [
     path("my-store/", my_store, name="my_store"),
     path("my-store/add-product/", add_product, name="add_product"),
     path("my-store/edit-product/<int:pk>/", edit_product, name="edit_product"),
+    path("my-store/delete-product/<int:pk>/", delete_product, name="delete_product"),
 ]

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -12,14 +13,20 @@ from store.models import Product
 
 def vendor_detail(request, pk):
     user = User.objects.get(pk=pk)
-    context = {"user": user}
+    products = user.products.filter(status=Product.ACTIVE)
+    context = {
+        "user": user,
+        "products": products,
+    }
 
     return render(request, "vendor_detail.html", context)
 
 
 @login_required
 def my_store(request):
-    return render(request, "my_store.html")
+    products = request.user.products.exclude(status=Product.DELETED)
+    context = {"products": products}
+    return render(request, "my_store.html", context)
 
 
 @login_required
@@ -34,6 +41,8 @@ def add_product(request):
             product.user = request.user
             product.slug = slugify(title)
             product.save()
+
+            messages.success(request, "Product added successfully!")
 
             return redirect("my_store")
     else:
@@ -57,15 +66,29 @@ def edit_product(request, pk):
         if form.is_valid():
             form.save()
 
+        messages.success(request, "Product updated successfully!")
+
         return redirect("my_store")
     else:
         form = ProductForm(instance=product)
 
     context = {
         "title": "Edit Product",
+        "product": product,
         "form": form,
     }
     return render(request, "add_product.html", context)
+
+
+@login_required
+def delete_product(request, pk):
+    product = Product.objects.filter(user=request.user).get(pk=pk)
+    product.status = Product.DELETED
+    product.save()
+
+    messages.success(request, "Product deleted successfully!")
+
+    return redirect("my_store")
 
 
 @login_required
