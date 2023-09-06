@@ -2,7 +2,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.views import LogoutView, LoginView
 
-from .views import vendor_detail, signup, my_account, my_store, add_product
+from .views import (
+    vendor_detail,
+    signup,
+    my_account,
+    my_store,
+    add_product,
+    edit_product,
+)
 
 
 urlpatterns = [
@@ -13,4 +20,5 @@ urlpatterns = [
     path("my-account/", my_account, name="my_account"),
     path("my-store/", my_store, name="my_store"),
     path("my-store/add-product/", add_product, name="add_product"),
+    path("my-store/edit-product/<int:pk>/", edit_product, name="edit_product"),
 ]

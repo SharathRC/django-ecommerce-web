@@ -7,7 +7,7 @@ from django.utils.text import slugify
 
 from .models import UserProfile
 from store.forms import ProductForm
-from store.models import Product, Category
+from store.models import Product
 
 
 def vendor_detail(request, pk):
@@ -39,8 +39,32 @@ def add_product(request):
     else:
         form = ProductForm()
 
-    context = {"form": form}
+    context = {
+        "title": "Add Product",
+        "form": form,
+    }
 
+    return render(request, "add_product.html", context)
+
+
+@login_required
+def edit_product(request, pk):
+    product = Product.objects.filter(user=request.user).get(pk=pk)
+
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES, instance=product)
+
+        if form.is_valid():
+            form.save()
+
+        return redirect("my_store")
+    else:
+        form = ProductForm(instance=product)
+
+    context = {
+        "title": "Edit Product",
+        "form": form,
+    }
     return render(request, "add_product.html", context)
 
 
