@@ -30,7 +30,7 @@ def my_store(request):
 
 
 @login_required
-def add_product(request):
+def product_form(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
 
@@ -53,7 +53,7 @@ def add_product(request):
         "form": form,
     }
 
-    return render(request, "add_product.html", context)
+    return render(request, "product_form.html", context)
 
 
 @login_required
@@ -77,7 +77,7 @@ def edit_product(request, pk):
         "product": product,
         "form": form,
     }
-    return render(request, "add_product.html", context)
+    return render(request, "product_form.html", context)
 
 
 @login_required

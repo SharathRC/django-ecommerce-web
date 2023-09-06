@@ -13,7 +13,7 @@
     {% endfor %}
 {% endif %}
 
-<a href="{% url 'add_product' %}" class="mt-4 inline-block py-4 px-8 bg-teal-500 text-white">Add product</a>
+<a href="{% url 'product_form' %}" class="mt-4 inline-block py-4 px-8 bg-teal-500 text-white">Add product</a>
 
 <h2 class="mt-10 text-xl">My products</h2>
 {% if request.user.products.all %}
