@@ -9,7 +9,24 @@ def add_to_cart(request, product_id):
     cart = Cart(request)
     cart.add(product_id)
 
-    return redirect("homepage")
+    return redirect("cart_view")
+
+
+def remove_from_cart(request, product_id):
+    cart = Cart(request)
+    cart.remove(product_id)
+
+    return redirect("cart_view")
+
+
+def cart_view(request):
+    cart = Cart(request)
+
+    context = {
+        "cart": cart,
+    }
+
+    return render(request, "cart_view.html", context)
 
 
 def search(request):
