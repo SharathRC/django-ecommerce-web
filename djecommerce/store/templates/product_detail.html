@@ -22,4 +22,11 @@
             {{product.description}}
         </p>
     {% endif %}
+
+    <div class="mt-6">
+        <a href="{% url 'add_to_cart' product.id %}" class="py-2 px-4 bg-teal-800 text-white rounded-xl hover:bg-teal-900">
+            Add to cart
+        </a>
+    </div>
+
 {% endblock content %}
