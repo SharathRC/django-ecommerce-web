@@ -5,7 +5,7 @@
                 <a href="{% url 'edit_product' product.id %}">
                     {% if product.image %}
                         <div class="image mb-2">
-                            <img src="{{ product.image.url}}" alt="Image of {{ product.title}}">
+                            <img src="{{ product.image.url }}" alt="Image of {{ product.title }}">
                         </div>
                     {% endif %}
                     <h2 class="text-xl">{{ product.title}}</h2>
