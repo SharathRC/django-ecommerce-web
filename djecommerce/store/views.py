@@ -19,6 +19,19 @@ def remove_from_cart(request, product_id):
     return redirect("cart_view")
 
 
+def change_quantity(request, product_id):
+    cart = Cart(request)
+    action = request.GET.get("action", "")
+    if action:
+        quantity = 1
+        if action == "decrease":
+            quantity = -1
+
+        cart.add(product_id=product_id, quantity=quantity, update_quantity=True)
+
+    return redirect("cart_view")
+
+
 def cart_view(request):
     cart = Cart(request)
 

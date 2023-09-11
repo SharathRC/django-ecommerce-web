@@ -41,8 +41,8 @@ class Cart(object):
         self.save()
 
     def remove(self, product_id):
-        if str(product_id) in self.cart.keys():
-            del self.cart[str(product_id)]
+        if product_id in self.cart.keys():
+            del self.cart[product_id]
 
             self.save()
 
