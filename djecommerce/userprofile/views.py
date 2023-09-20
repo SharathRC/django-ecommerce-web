@@ -65,6 +65,7 @@ def edit_product(request, pk):
 
         if form.is_valid():
             form.save()
+            product.updated_thumbnail()
 
         messages.success(request, "Product updated successfully!")
 

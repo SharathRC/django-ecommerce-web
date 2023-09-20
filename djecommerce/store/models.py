@@ -87,3 +87,7 @@ class Product(models.Model):
         thumbnail = File(thumb_io, name=name)
 
         return thumbnail
+
+    def updated_thumbnail(self):
+        self.thumbnail = self.make_thumbnail(image=self.image)
+        self.save()
