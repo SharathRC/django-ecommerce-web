@@ -6,7 +6,7 @@
     <h1 class="mb-8 text-3xl">Cart</h1>
 
     {% for item in cart %}
-        <div class="px-4 py-4 mb-2 bg-teal-100 flex items-center">
+        <div class="px-4 py-4 mb-2 bg-teal-100 flex items-center rounded-xl">
             <div>
                 <img src="{{ item.product.get_thumbnail }}" class="w-20">
 
