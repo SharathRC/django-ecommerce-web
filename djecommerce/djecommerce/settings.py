@@ -123,9 +123,10 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / MEDIA_URL
 
 ## Login/Logout
+LOGIN_URL = "login"
 
-LOGOUT_REDIRECT_URL = "homepage"
 LOGIN_REDIRECT_URL = "homepage"
+LOGOUT_REDIRECT_URL = "homepage"
 
 CART_SESSION_ID = "cart"
 SESSION_COOKIE_AGE = 86400

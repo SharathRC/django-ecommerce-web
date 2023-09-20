@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 from .cart import Cart
 from .models import Product, Category
+from .forms import OrderForm
 
 
 def add_to_cart(request, product_id):
@@ -40,6 +42,24 @@ def cart_view(request):
     }
 
     return render(request, "cart_view.html", context)
+
+
+@login_required
+def checkout(request):
+    cart = Cart(request)
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+
+        if form.is_valid():
+            return redirect("homepage")
+    else:
+        form = OrderForm()
+
+    context = {
+        "cart": cart,
+        "form": form,
+    }
+    return render(request, "checkout.html", context)
 
 
 def search(request):

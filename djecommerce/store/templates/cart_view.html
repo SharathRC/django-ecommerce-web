@@ -35,5 +35,5 @@
     <strong>Total cost: </strong>{{ cart.get_total_cost }}
 
     <hr class="mt-4 mb-4">
-    <a href="" class="inline-block px-8 py-4 bg-teal-500 text-white">Checkout</a>
+    <a href="{% url 'checkout' %}" class="inline-block px-8 py-4 bg-teal-500 text-white">Checkout</a>
 {% endblock content %}
