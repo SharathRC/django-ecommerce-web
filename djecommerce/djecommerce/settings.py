@@ -54,6 +54,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "djecommerce.urls"
 
+STRIPE_PUB_KEY = "pk_test_51O08XaEYAtwS507yRy73lBDY7W7BRdc9jMCGTTfpnsnu7HORNDFCuXiI5kibu8VfO0F8pfIyFz7S7pL8bBAwteBf00LUhpvJYN"
+STRIPE_SECRET_KEY = "sk_test_51O08XaEYAtwS507y36Yiza7186r2hzxDQ7FwRK8mIJhNYKHQZJdxI82w4xhRheBynnkbTCCjbUUFlnnorOoTIlT500RrwZWdDj"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

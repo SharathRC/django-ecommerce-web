@@ -1,6 +1,11 @@
+import json
+import stripe
+
 from django.shortcuts import render, get_object_or_404, redirect
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import JsonResponse
 
 from .cart import Cart
 from .models import Product, Category, Order, OrderItem
@@ -44,6 +49,10 @@ def cart_view(request):
     return render(request, "cart_view.html", context)
 
 
+def invalid_checkout(request):
+    return render(request, "invalid_checkout.html")
+
+
 @login_required
 def checkout(request):
     cart = Cart(request)
@@ -52,11 +61,42 @@ def checkout(request):
 
         if form.is_valid():
             total_price = 0
+            items = []
+
             for item in cart:
                 product = item["product"]
                 total_price += product.price * int(item["quantity"])
+
+                items.append(
+                    {
+                        "price_data": {
+                            "currency": "eur",
+                            "product_data": {
+                                "name": product.title,
+                            },
+                            "unit_amount": product.price,
+                        },
+                        "quantity": item["quantity"],
+                    }
+                )
+
+            total_price_euro = total_price / 100
+            if total_price_euro <= 0.5:
+                return redirect("invalid_checkout")
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+            session = stripe.checkout.Session.create(
+                payment_method_types=["card"],
+                line_items=items,
+                mode="payment",
+                success_url="http://127.0.0.1:8002/cart/success/",
+                cancel_url="http://127.0.0.1:8002/cart/",
+            )
+            payment_intent = session.payment_intent
+
             order = form.save(commit=False)
             order.created_by = request.user
+            order.is_paid = True
+            order.payment_intent = payment_intent
             order.paid_amount = total_price
             order.save()
 
@@ -73,13 +113,15 @@ def checkout(request):
 
             cart.clear()
 
-            return redirect("homepage")
+            # return redirect("homepage")
+            return JsonResponse({"session": session, "order": payment_intent})
     else:
         form = OrderForm()
 
     context = {
         "cart": cart,
         "form": form,
+        "pub_key": settings.STRIPE_PUB_KEY,
     }
     return render(request, "checkout.html", context)
 

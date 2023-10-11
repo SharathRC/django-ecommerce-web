@@ -10,6 +10,7 @@ from .views import (
     remove_from_cart,
     change_quantity,
     checkout,
+    invalid_checkout,
 )
 
 urlpatterns = [
@@ -21,6 +22,7 @@ urlpatterns = [
     path("change-quantity/<int:product_id>/", change_quantity, name="change_quantity"),
     path("cart/", cart_view, name="cart_view"),
     path("cart/checkout/", checkout, name="checkout"),
+    path("cart/invalid-checkout/", invalid_checkout, name="invalid_checkout"),
     path("<slug:category_slug>/<slug:slug>/", product_detail, name="product_detail"),
     path("<slug:slug>/", category_detail, name="category_detail"),
 ]
