@@ -57,6 +57,7 @@ def invalid_checkout(request):
 def checkout(request):
     cart = Cart(request)
     if request.method == "POST":
+        data = json.loads(request.body)
         form = OrderForm(request.POST)
 
         if form.is_valid():
@@ -83,22 +84,33 @@ def checkout(request):
             total_price_euro = total_price / 100
             if total_price_euro <= 0.5:
                 return redirect("invalid_checkout")
+
             stripe.api_key = settings.STRIPE_SECRET_KEY
             session = stripe.checkout.Session.create(
                 payment_method_types=["card"],
                 line_items=items,
                 mode="payment",
-                success_url="http://127.0.0.1:8002/cart/success/",
-                cancel_url="http://127.0.0.1:8002/cart/",
+                success_url="http://127.0.0.1:8000/cart/success/",
+                cancel_url="http://127.0.0.1:8000/cart/",
             )
-            payment_intent = session.payment_intent
 
-            order = form.save(commit=False)
-            order.created_by = request.user
-            order.is_paid = True
-            order.payment_intent = payment_intent
-            order.paid_amount = total_price
-            order.save()
+            payment_intent = stripe.PaymentIntent.create(
+                amount=total_price,
+                currency="eur",
+                payment_method_types=["card"],
+            )
+
+            order = Order.objects.create(
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                address=data["address"],
+                zipcode=data["zipcode"],
+                city=data["city"],
+                created_by=request.user,
+                is_paid=True,
+                payment_intent=payment_intent,
+                paid_amount=total_price,
+            )
 
             for item in cart:
                 product = item["product"]
