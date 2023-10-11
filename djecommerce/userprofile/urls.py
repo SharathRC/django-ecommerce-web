@@ -10,6 +10,7 @@ from .views import (
     product_form,
     edit_product,
     delete_product,
+    my_store_order_detail,
 )
 
 
@@ -20,6 +21,11 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("my-account/", my_account, name="my_account"),
     path("my-store/", my_store, name="my_store"),
+    path(
+        "my-store/order-detail/<int:pk>",
+        my_store_order_detail,
+        name="my_store_order_detail",
+    ),
     path("my-store/product-form/", product_form, name="product_form"),
     path("my-store/edit-product/<int:pk>/", edit_product, name="edit_product"),
     path("my-store/delete-product/<int:pk>/", delete_product, name="delete_product"),

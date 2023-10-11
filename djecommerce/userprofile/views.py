@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -8,7 +8,7 @@ from django.utils.text import slugify
 
 from .models import UserProfile
 from store.forms import ProductForm
-from store.models import Product
+from store.models import Product, Order, OrderItem
 
 
 def vendor_detail(request, pk):
@@ -25,8 +25,25 @@ def vendor_detail(request, pk):
 @login_required
 def my_store(request):
     products = request.user.products.exclude(status=Product.DELETED)
-    context = {"products": products}
+
+    orders = OrderItem.objects.filter(product__user=request.user)
+
+    context = {
+        "products": products,
+        "order_items": orders,
+    }
     return render(request, "my_store.html", context)
+
+
+@login_required
+def my_store_order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+
+    context = {
+        "order": order,
+    }
+
+    return render(request, "my_store_order_detail.html", context)
 
 
 @login_required
