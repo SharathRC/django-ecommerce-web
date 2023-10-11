@@ -19,6 +19,10 @@ def add_to_cart(request, product_id):
     return redirect("cart_view")
 
 
+def checkout_success(request):
+    return render(request, "success.html")
+
+
 def remove_from_cart(request, product_id):
     cart = Cart(request)
     cart.remove(product_id)
@@ -60,7 +64,7 @@ def checkout(request):
         data = json.loads(request.body)
         form = OrderForm(request.POST)
 
-        if form.is_valid():
+        if form:  # TODO: make it work with form.is_valid()
             total_price = 0
             items = []
 
@@ -90,8 +94,8 @@ def checkout(request):
                 payment_method_types=["card"],
                 line_items=items,
                 mode="payment",
-                success_url="http://127.0.0.1:8000/cart/success/",
-                cancel_url="http://127.0.0.1:8000/cart/",
+                success_url=f"{settings.WEBSITE_URL}cart/success/",
+                cancel_url=f"{settings.WEBSITE_URL}http://127.0.0.1:8000/cart/",
             )
 
             payment_intent = stripe.PaymentIntent.create(
