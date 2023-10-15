@@ -62,75 +62,83 @@ def checkout(request):
     cart = Cart(request)
     if request.method == "POST":
         data = json.loads(request.body)
-        form = OrderForm(request.POST)
 
-        if form:  # TODO: make it work with form.is_valid()
-            total_price = 0
-            items = []
+        first_name = data["first_name"]
+        last_name = data["last_name"]
+        address = data["address"]
+        zipcode = data["zipcode"]
+        city = data["city"]
 
-            for item in cart:
-                product = item["product"]
-                total_price += product.price * int(item["quantity"])
+        if first_name and last_name and address and zipcode and city:
+            form = OrderForm(request.POST)
 
-                items.append(
-                    {
-                        "price_data": {
-                            "currency": "eur",
-                            "product_data": {
-                                "name": product.title,
+            if form:  # TODO: make it work with form.is_valid()
+                total_price = 0
+                items = []
+
+                for item in cart:
+                    product = item["product"]
+                    total_price += product.price * int(item["quantity"])
+
+                    items.append(
+                        {
+                            "price_data": {
+                                "currency": "eur",
+                                "product_data": {
+                                    "name": product.title,
+                                },
+                                "unit_amount": product.price,
                             },
-                            "unit_amount": product.price,
-                        },
-                        "quantity": item["quantity"],
-                    }
+                            "quantity": item["quantity"],
+                        }
+                    )
+
+                total_price_euro = total_price / 100
+                if total_price_euro <= 0.5:
+                    return redirect("invalid_checkout")
+
+                stripe.api_key = settings.STRIPE_SECRET_KEY
+                session = stripe.checkout.Session.create(
+                    payment_method_types=["card"],
+                    line_items=items,
+                    mode="payment",
+                    success_url=f"{settings.WEBSITE_URL}cart/success/",
+                    cancel_url=f"{settings.WEBSITE_URL}cart/",
                 )
 
-            total_price_euro = total_price / 100
-            if total_price_euro <= 0.5:
-                return redirect("invalid_checkout")
-
-            stripe.api_key = settings.STRIPE_SECRET_KEY
-            session = stripe.checkout.Session.create(
-                payment_method_types=["card"],
-                line_items=items,
-                mode="payment",
-                success_url=f"{settings.WEBSITE_URL}cart/success/",
-                cancel_url=f"{settings.WEBSITE_URL}http://127.0.0.1:8000/cart/",
-            )
-
-            payment_intent = stripe.PaymentIntent.create(
-                amount=total_price,
-                currency="eur",
-                payment_method_types=["card"],
-            )
-
-            order = Order.objects.create(
-                first_name=data["first_name"],
-                last_name=data["last_name"],
-                address=data["address"],
-                zipcode=data["zipcode"],
-                city=data["city"],
-                created_by=request.user,
-                is_paid=True,
-                payment_intent=payment_intent,
-                paid_amount=total_price,
-            )
-
-            for item in cart:
-                product = item["product"]
-                price = product.price * int(item["quantity"])
-
-                item = OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    price=price,
-                    quantity=int(item["quantity"]),
+                payment_intent = stripe.PaymentIntent.create(
+                    amount=total_price,
+                    currency="eur",
+                    payment_method_types=["card"],
                 )
 
-            cart.clear()
+                order = Order.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    address=address,
+                    zipcode=zipcode,
+                    city=city,
+                    created_by=request.user,
+                    is_paid=True,
+                    payment_intent=payment_intent,
+                    paid_amount=total_price,
+                )
 
-            # return redirect("homepage")
-            return JsonResponse({"session": session, "order": payment_intent})
+                for item in cart:
+                    product = item["product"]
+                    price = product.price * int(item["quantity"])
+
+                    item = OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        price=price,
+                        quantity=int(item["quantity"]),
+                    )
+
+                cart.clear()
+
+                # return redirect("homepage")
+                return JsonResponse({"session": session, "order": payment_intent})
     else:
         form = OrderForm()
 
